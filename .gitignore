@@ -1,0 +1,30 @@
+# Ignore virtual environment
+venv/
+
+# Ignore environment variables (API keys, secrets)
+.env
+
+# Ignore cache and temporary files
+__pycache__/
+*.pyc
+*.pyo
+*.log
+
+# Ignore Jupyter Notebook checkpoints (if used)
+.ipynb_checkpoints/
+
+# Ignore IDE and editor config files
+.vscode/
+*.swp
+*.swo
+
+# Ignore dependencies (if using poetry or pipenv)
+Pipfile
+Pipfile.lock
+
+# Ignore database files (if used)
+*.sqlite3
+*.db
+
+# Ignore output files
+/output/
