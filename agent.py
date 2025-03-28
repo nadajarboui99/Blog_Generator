@@ -1,4 +1,4 @@
-'''from langchain.agents import initialize_agent  # Use langchain directly
+from langchain.agents import initialize_agent  # Use langchain directly
 from langchain_openai import OpenAI  # Corrected import for OpenAI
 from langchain_community.tools import WikipediaQueryRun, DuckDuckGoSearchRun  # Corrected tools import
 from langchain_community.utilities import WikipediaAPIWrapper  # Correct import for Wikipedia API
@@ -26,4 +26,4 @@ agent = initialize_agent(
 
 # Function to ask the agent a question
 def generate_blog_research(topic):
-    return agent.run(f"Research and summarize information about {topic}.")'''
+    return agent.run(f"Research and summarize information about {topic}.")
