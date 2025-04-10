@@ -4,12 +4,13 @@ from langchain.agents import Tool, initialize_agent, AgentType
 from langchain.tools import WikipediaQueryRun, DuckDuckGoSearchRun
 from langchain.utilities import WikipediaAPIWrapper
 
-# Set the path to your GPT4All model
+# 1. Set the path to your GPT4All model
 MODEL_PATH = r"C:\Users\Asus\AppData\Local\nomic.ai\GPT4All\mistral-7b-openorca.gguf2.Q4_0.gguf"
 
 # 2. Load local model
+#instantie the local language model with a token limit of 512
 llm = GPT4All(model=MODEL_PATH, max_tokens=512, verbose=True)
-# 2. Setup tools
+# 3. Setup tools
 wiki = WikipediaQueryRun(api_wrapper=WikipediaAPIWrapper())
 search = DuckDuckGoSearchRun()
 
@@ -18,16 +19,16 @@ tools = [
     Tool(name="DuckDuckGo Search", func=search.run, description="Useful for general web research")
 ]
 
-# 3. Initialize the agent
+# 4. Initialize the agent
 agent = initialize_agent(
     tools=tools,
     llm=llm,
     agent=AgentType.ZERO_SHOT_REACT_DESCRIPTION,
     verbose=True,
-    handle_parsing_errors=Truen
+    handle_parsing_errors=True
 )
 
-# 4. Function to generate a blog
+# 5. Function to generate a blog
 def generate_blog(topic):
     research_prompt = f"""You are a helpful blog writer.
 Your task is to create a well-structured blog post about: {topic}.

@@ -12,4 +12,8 @@ Install Required Libraries
 Create initial project files
 Configure .gitignore
 Configure .env
-Install gpt4ALL
+Install gpt4ALL locally
+Install from gpt4ALL app a model to work with (In my case, I installed the mistral openorca llm)
+
+
+
