@@ -17,3 +17,5 @@ Install from gpt4ALL app a model to work with (In my case, I installed the mistr
 
 
 
+
+

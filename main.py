@@ -1,56 +1,57 @@
 import os
 from langchain_community.llms import GPT4All
-from langchain.agents import Tool, initialize_agent, AgentType
-from langchain.tools import WikipediaQueryRun, DuckDuckGoSearchRun
-from langchain.utilities import WikipediaAPIWrapper
+from langchain.agents import Tool
+from langchain_community.tools import WikipediaQueryRun, DuckDuckGoSearchRun
+from langchain_community.utilities import WikipediaAPIWrapper
 
-# 1. Set the path to your GPT4All model
+os.environ['HTTP_PROXY'] = ''
+os.environ['HTTPS_PROXY'] = ''
+
+# 1. Model setup
 MODEL_PATH = r"C:\Users\Asus\AppData\Local\nomic.ai\GPT4All\mistral-7b-openorca.gguf2.Q4_0.gguf"
+llm = GPT4All(model=MODEL_PATH, max_tokens=1024, verbose=True)  # Increase tokens for longer blogs
 
-# 2. Load local model
-#instantie the local language model with a token limit of 512
-llm = GPT4All(model=MODEL_PATH, max_tokens=512, verbose=True)
-# 3. Setup tools
+# 2. Tool setup
 wiki = WikipediaQueryRun(api_wrapper=WikipediaAPIWrapper())
 search = DuckDuckGoSearchRun()
 
-tools = [
-    Tool(name="Wikipedia", func=wiki.run, description="Useful for getting summaries from Wikipedia"),
-    Tool(name="DuckDuckGo Search", func=search.run, description="Useful for general web research")
-]
-
-# 4. Initialize the agent
-agent = initialize_agent(
-    tools=tools,
-    llm=llm,
-    agent=AgentType.ZERO_SHOT_REACT_DESCRIPTION,
-    verbose=True,
-    handle_parsing_errors=True
-)
-
-# 5. Function to generate a blog
+# 3. New: Custom blog generation function
 def generate_blog(topic):
-    research_prompt = f"""You are a helpful blog writer.
-Your task is to create a well-structured blog post about: {topic}.
+    print(f"\n🔍 Researching topic: {topic}\n")
 
-You will first research the topic using the available tools.
-Then generate a blog with the following structure:
+    # Use tools manually
+    wiki_summary = wiki.run(topic)
+    duckduckgo_results = search.run(topic)
 
-Heading: [Title of the Blog]
-Introduction: [Catchy intro]
-Content: [In-depth explanation with relevant researched details]
-Summary: [Short recap of key points]
+    # Construct detailed prompt with structured input
+    prompt = f"""
+You are an intelligent and creative blog writer.
 
-Use Wikipedia and DuckDuckGo Search if needed.
-Let's begin.
+Write a well-researched blog post on the topic: "{topic}"
 
-Blog topic: {topic}
+Use the following information to help you write the blog:
+
+Wikipedia Summary:
+{wiki_summary}
+
+DuckDuckGo Search Results:
+{duckduckgo_results}
+
+Blog Structure:
+- **Heading**: A clear and attractive title
+- **Introduction**: Catchy and engaging start to the topic
+- **Content**: Detailed body, use research from above. Mention sources like "According to Wikipedia" or "Based on online search results..."
+- **Summary**: Recap the main points covered
+
+Make sure the blog is clear, well-structured, and informative.
 """
-    response = agent.invoke(research_prompt)
-    print("\n📝 Generated Blog:\n")
-    print(response["output"] if isinstance(response, dict) else response)
 
-# 5. Prompt user
+    # Generate final blog
+    print("\n📝 Generating blog...\n")
+    output = llm(prompt)
+    print(output)
+
+# 4. Main entry
 if __name__ == "__main__":
     user_topic = input("Enter blog topic: ")
     generate_blog(user_topic)
